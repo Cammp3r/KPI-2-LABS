@@ -30,7 +30,7 @@
 
 ## Language
 - languageID - PK - int
-- name - - string
+- name - UK - string 
 
 ## TestCase
 - testCaseID - PK - int
