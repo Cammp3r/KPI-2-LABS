@@ -4,6 +4,7 @@
 - email - UK - string
 - password - - string
 - created_at -  - datetime
+- has_premium - - boolean
 
 ## Problem
 - problemID - PK - int
