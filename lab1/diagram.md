@@ -32,6 +32,7 @@ string status
 int runtime_ms
 int memory_kb
 datetime submitted_at
+datetime updated_at
     }
 
 Language {
