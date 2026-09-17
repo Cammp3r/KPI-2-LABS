@@ -4,9 +4,9 @@ DEFENSE — Завдання 1: Домен і модель даних (ER)
 Спроєктувати ER діаграму для домену leetcode.com, головна задача якого є розв'язування алгоритмічних завдань на різних мовах програмувань. Модель має фіксувати всі облікові данні користувача, давати доступ до розв'язування завдань, перевіряти розв'язки, давати можливість знаходити задачі по тегам та мовам програмування, та постити свої розв'язки задач.
 
 Топ-3 розбіжності (spec ↔ артефакт) + коміт-виправлення:
-• Спочатку у сутності User не було атрибута has_premium, але згодом я додав його. (https://github.com/Cammp3r/KPI-2-LABS/commit/250f7e815653130f61623c6b7264457b2ee8238a)
-• В spec.md спочатку зв'язок Submission - EditorialPost був один до одного але я виправив щоб було 0/1 до 0/1, бо якщо немає Submission то і не буде EditorialPost. (https://github.com/Cammp3r/KPI-2-LABS/commit/250f7e815653130f61623c6b7264457b2ee8238a)
-• Додано атрибут location для User. (https://github.com/Cammp3r/KPI-2-LABS/commit/63c591d502bc4e276acbc5bb8a50546f7cc3cb7f)
+- Спочатку у сутності User не було атрибута has_premium, але згодом я додав його. (https://github.com/Cammp3r/KPI-2-LABS/commit/250f7e815653130f61623c6b7264457b2ee8238a)
+- В spec.md спочатку зв'язок Submission - EditorialPost був один до одного але я виправив щоб було 0/1 до 0/1, бо якщо немає Submission то і не буде EditorialPost. (https://github.com/Cammp3r/KPI-2-LABS/commit/250f7e815653130f61623c6b7264457b2ee8238a)
+- Додано атрибут location для User. (https://github.com/Cammp3r/KPI-2-LABS/commit/63c591d502bc4e276acbc5bb8a50546f7cc3cb7f)
 
 Ключове рішення - які альтернативи зважив і чому обрав цю (ADR):
 1. Проблема: Як зв'язати задачу з категоріями/тегами (наприклад, Array, Two Pointers).
