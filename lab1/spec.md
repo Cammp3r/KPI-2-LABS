@@ -5,6 +5,7 @@
 - password - - string
 - created_at -  - datetime
 - has_premium - - boolean
+- location - - string
 
 ## Problem
 - problemID - PK - int
@@ -82,6 +83,6 @@
   - Зовнішній ключ: `EditorialPost.userID` посилається на `User.userID`.
 
 # Submission — EditorialPost (1:1, один-до-одного):**
-  - Конкретне подання розв'язку може бути використане для створення одного авторського розбору (0..1).
+  - Конкретне подання розв'язку може бути використане для створення одного авторського розбору (0..0).
   - Кожен розбір базується на конкретному успішному поданні (1..1).
   - Зовнішній ключ: `EditorialPost.submissionID` посилається на `Submission.submissionID`.
