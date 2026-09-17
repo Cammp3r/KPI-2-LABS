@@ -1,39 +1,71 @@
 ```mermaid
-    erDiagram
+   erDiagram
     USER {
-        int user_id PK
+        int userID PK
         string username UK
         string email UK
         string password
         datetime created_at
-        string location
+        boolean has_premium
     }
 
-    ORDER {
-        int order_id PK
-        int user_id FK
-        decimal total_amount
-        string status
-        datetime order_date
+    Problem {
+        int problemID PK
+        string title UK
+       string description
+       string difficulty
+       boolean is_premium
     }
 
-    PRODUCT {
-        int product_id PK
-        string name
-        decimal price
-        string category
-        int stock_quantity
+    Tag {
+       int tagID PK
+string name UK
+string category
     }
 
-    ORDER_ITEM {
-        int order_id PK,FK
-        int product_id PK,FK
-        int quantity
-        decimal unit_price
+    Submission {
+        int submissionID PK
+int userID FK
+int problemID FK
+int languageID FK
+string code
+string status
+int runtime_ms
+int memory_kb
+datetime submitted_at
+string location
     }
 
-    USER ||--o{ ORDER : "places"
-    ORDER ||--o{ ORDER_ITEM : "contains"
-    PRODUCT ||--o{ ORDER_ITEM : "ordered"
+Language {
+int languageID PK
+string name UK
+}
+
+TestCase {
+int testCaseID PK
+int problemId FK
+string input_code
+string expected_output
+}
+
+EditorialPost {
+int editorialPostID PK
+int userID FK
+int problemID FK
+int languageID FK
+int submissionID FK
+string title
+
+
+}
+
+
+    USER ||--o{ Submission : "submits"
+USER ||--o{ EditorialPost : "posts"
+Problem ||--o{Submission : ""
+Language ||--o{Submission : ""
+Problem ||--|{TestCase : ""
+Problem }o--o{Tag : ""
+Submission o|--o|EditorialPost : ""
    
 ```

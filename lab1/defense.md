@@ -6,7 +6,7 @@ DEFENSE — Завдання 1: Домен і модель даних (ER)
 Топ-3 розбіжності (spec ↔ артефакт) + коміт-виправлення:
 • Спочатку у сутності User не було атрибута has_premium, але згодом я додав (https://github.com/Cammp3r/KPI-2-LABS/commit/250f7e815653130f61623c6b7264457b2ee8238a)
 • В spec.md спочатку зв'язок Submission - EditorialPost був один до одного але я виправив щоб було 0/1 до 0/1, бо якщо немає Submission то і не буде EditorialPost (https://github.com/Cammp3r/KPI-2-LABS/commit/250f7e815653130f61623c6b7264457b2ee8238a)
-• 
+• Додано атрибут location для User.(https://github.com/Cammp3r/KPI-2-LABS/commit/41b7b3ae270531871fdc9f938b51354c5a6fe3e6)
 
 Ключове рішення — які альтернативи зважив і чому обрав цю (ADR):
 
