@@ -1,5 +1,4 @@
-```mermaid
-    erDiagram
+erDiagram
     USER {
         int userID PK
         string username UK
@@ -63,8 +62,6 @@ string title
 USER ||--o{ EditorialPost : "posts"
 Problem ||--o{Submission : ""
 Language ||--o{Submission : ""
-Problem ||--o{TestCase : ""
+Problem ||--|{TestCase : ""
 Problem }o--o{Tag : ""
 Submission o|--o|EditorialPost : ""
-   
-```
