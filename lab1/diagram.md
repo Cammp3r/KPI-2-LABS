@@ -66,6 +66,6 @@ Problem ||--o{Submission : ""
 Language ||--o{Submission : ""
 Problem ||--|{TestCase : ""
 Problem }o--o{Tag : ""
-Submission o|--o|EditorialPost : ""
+Submission ||--o|EditorialPost : ""
    
 ```
