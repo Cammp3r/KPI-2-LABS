@@ -1,0 +1,61 @@
+@startuml usecase
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+' ===== Актори-люди (ліворуч) =====
+actor "Гість" as Guest
+actor "Користувач" as User
+actor "Premium-користувач" as Premium
+actor "Адміністратор" as Admin
+
+' ===== Узагальнення акторів =====
+User --|> Guest
+Premium --|> User
+Admin --|> User
+
+' ===== Межа системи =====
+rectangle {
+  usecase "UC-01\nПереглянути каталог задач" as UC01
+  usecase "UC-02\nФільтрувати задачі" as UC02
+  usecase "UC-03\nЗареєструватися" as UC03
+  usecase "UC-12\nУвійти" as UC12
+  usecase "UC-13\nУвійти за email\nі паролем" as UC13
+  usecase "UC-04\nУвійти через OAuth" as UC04
+  usecase "UC-05\nНадіслати рішення" as UC05
+  usecase "UC-06\nПеревірити рішення\nна тест-кейсах" as UC06
+  usecase "UC-07\nПереглянути історію\nнадсилань" as UC07
+  usecase "UC-08\nОпублікувати розбір" as UC08
+  usecase "UC-09\nОформити Premium" as UC09
+  usecase "UC-10\nВідкрити Premium-задачу" as UC10
+  usecase "UC-11\nСтворити задачу" as UC11
+}
+
+' ===== Зовнішні системи (праворуч) =====
+actor "OAuth-провайдер" as OAuth <<external system>>
+actor "Платіжний сервіс" as Pay <<external system>>
+
+' ===== Узагальнення use case: два способи входу =====
+UC13 --|> UC12
+UC04 --|> UC12
+
+' ===== Асоціації: основні актори =====
+Guest --> UC01
+Guest --> UC03
+Guest --> UC12
+User --> UC05
+User --> UC07
+User --> UC09
+Premium --> UC10
+Admin --> UC11
+
+' ===== Асоціації: зовнішні системи =====
+UC04 --> OAuth
+UC09 --> Pay
+
+' ===== include / extend =====
+UC05 ..> UC06 : <<include>>
+UC02 ..> UC01 : <<extend>>\n[обрано фільтр]
+UC08 ..> UC07 : <<extend>>\n[рішення має статус Accepted]
+
+@enduml
