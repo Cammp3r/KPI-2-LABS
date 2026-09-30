@@ -19,9 +19,7 @@ rectangle {
   usecase "UC-01\nПереглянути каталог задач" as UC01
   usecase "UC-02\nФільтрувати задачі" as UC02
   usecase "UC-03\nЗареєструватися" as UC03
-  usecase "UC-12\nУвійти" as UC12
-  usecase "UC-13\nУвійти за email\nі паролем" as UC13
-  usecase "UC-04\nУвійти через OAuth" as UC04
+  usecase "UC-04\nУвійти за email\nі паролем" as UC04
   usecase "UC-05\nНадіслати рішення" as UC05
   usecase "UC-06\nПеревірити рішення\nна тест-кейсах" as UC06
   usecase "UC-07\nПереглянути історію\nнадсилань" as UC07
@@ -32,17 +30,12 @@ rectangle {
 }
 
 ' ===== Зовнішні системи (праворуч) =====
-actor "OAuth-провайдер" as OAuth <<external system>>
 actor "Платіжний сервіс" as Pay <<external system>>
-
-' ===== Узагальнення use case: два способи входу =====
-UC13 --|> UC12
-UC04 --|> UC12
 
 ' ===== Асоціації: основні актори =====
 Guest --> UC01
 Guest --> UC03
-Guest --> UC12
+Guest --> UC04
 User --> UC05
 User --> UC07
 User --> UC09
@@ -50,7 +43,6 @@ Premium --> UC10
 Admin --> UC11
 
 ' ===== Асоціації: зовнішні системи =====
-UC04 --> OAuth
 UC09 --> Pay
 
 ' ===== include / extend =====
