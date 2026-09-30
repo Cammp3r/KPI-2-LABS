@@ -1,7 +1,5 @@
 # Матриця трасування
 
-Джерела: вимоги — `requirements.md`, сценарії — `scenarios.feature` (теги `@REQ-xx`), use cases — `usecase.puml`.
-
 ## Use Cases
 | ID | Use Case | Актори | Зв'язок |
 |---|---|---|---|
