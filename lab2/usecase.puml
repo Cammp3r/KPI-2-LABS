@@ -27,6 +27,7 @@ rectangle {
   usecase "UC-09\nОформити Premium" as UC09
   usecase "UC-10\nВідкрити Premium-задачу" as UC10
   usecase "UC-11\nСтворити задачу" as UC11
+  usecase "UC-12\nПодарувати Premium" as UC12
 }
 
 ' ===== Зовнішні системи (праворуч) =====
@@ -49,5 +50,6 @@ UC09 --> Pay
 UC05 ..> UC06 : <<include>>
 UC02 ..> UC01 : <<extend>>\n[обрано фільтр]
 UC08 ..> UC07 : <<extend>>\n[рішення має статус Accepted]
+UC12 ..> UC09 : <<extend>>\n[отримувач — інший користувач]
 
 @enduml

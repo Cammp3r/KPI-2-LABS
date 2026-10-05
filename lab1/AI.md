@@ -418,7 +418,7 @@ GitHub сам згенерує з цього картинку, і це на 100%
 
 ## 9-ий Запит
 
-Промт - "норм сделал? (https://lh3.googleusercontent.com/gg/ACRwjauRc4X3Arh-qJsAbwWab9QlkEWH7AEpWLAfOKgVK7tT1RleINR8tlCSCAXppIPFjfIIU2OrImeDbhwmBqKY5LYojXJmaFxkDuaJgvkDt-11r2PE9HBkqsTh3xx_chVbSwgOqU7UoPrhbCQBKLrjvpBdw3M1RWnFbU65czxBwaBUWtd0tbiZ8jr37zOa49ojwo6gguoCcXsI551knrcn6VgswNzGe3bTCyZiuA1Sviask9fsa50Qvi1pWAF3vEd1HMyOt15A7Z9vbDQgjf_zg3Ouv4UcuWKfRtw)"
+Промт - "норм зробив? (https://lh3.googleusercontent.com/gg/ACRwjauRc4X3Arh-qJsAbwWab9QlkEWH7AEpWLAfOKgVK7tT1RleINR8tlCSCAXppIPFjfIIU2OrImeDbhwmBqKY5LYojXJmaFxkDuaJgvkDt-11r2PE9HBkqsTh3xx_chVbSwgOqU7UoPrhbCQBKLrjvpBdw3M1RWnFbU65czxBwaBUWtd0tbiZ8jr37zOa49ojwo6gguoCcXsI551knrcn6VgswNzGe3bTCyZiuA1Sviask9fsa50Qvi1pWAF3vEd1HMyOt15A7Z9vbDQgjf_zg3Ouv4UcuWKfRtw)"
 
 Відподвідь - "У завданні вказано чіткий формат здачі: **«Здача — 2 входи»**.
 

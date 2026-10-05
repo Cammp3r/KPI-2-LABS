@@ -110,12 +110,14 @@ Feature: LeetCode-подібна платформа
   Rule: Premium
 
     @REQ-16
-    Scenario: SC-13 Успішна оплата Premium
+    Scenario: SC-19 Успішне оформлення Premium у подарунок
       Given користувач "alex" авторизований
       And у "alex" has_premium = false
-      When "alex" оформлює Premium
+      And існує користувач "maria" з has_premium = false
+      When "alex" оформлює Premium у подарунок для "maria"
       And платіжний сервіс підтверджує успішну оплату
-      Then у "alex" has_premium = true
+      Then у "maria" has_premium = true
+      And у "alex" залишається has_premium = false
 
     @REQ-17 @REQ-18
     Scenario: SC-14 Відмова в оплаті Premium
@@ -160,3 +162,20 @@ Feature: LeetCode-подібна платформа
       When "alex" намагається створити задачу "Merge Intervals"
       Then дію відхилено
       And задача "Merge Intervals" не з'являється в каталозі
+
+    @REQ-22
+    Scenario: SC-20 Подарунок неіснуючому користувачу
+      Given користувач "alex" авторизований
+      And користувача з username "ghost" не існує
+      When "alex" оформлює Premium у подарунок для "ghost"
+      Then оформлення відхилено
+      And запит до платіжного сервісу не надсилається
+
+    @REQ-23
+    Scenario: SC-21 Подарунок користувачу, який уже має Premium
+      Given користувач "alex" авторизований
+      And існує користувач "maria" з has_premium = true
+      When "alex" оформлює Premium у подарунок для "maria"
+      Then оформлення відхилено
+      And система повідомляє, що "maria" уже має Premium
+      And запит до платіжного сервісу не надсилається
