@@ -110,7 +110,15 @@ Feature: LeetCode-подібна платформа
   Rule: Premium
 
     @REQ-16
-    Scenario: SC-19 Успішне оформлення Premium у подарунок
+    Scenario: SC-13 Успішна оплата Premium собі
+      Given користувач "alex" авторизований
+      And у "alex" has_premium = false
+      When "alex" оформлює Premium для себе
+      And платіжний сервіс підтверджує успішну оплату
+      Then у "alex" has_premium = true
+
+    @REQ-16
+    Scenario: SC-14 Успішне оформлення Premium у подарунок
       Given користувач "alex" авторизований
       And у "alex" has_premium = false
       And існує користувач "maria" з has_premium = false
@@ -119,8 +127,8 @@ Feature: LeetCode-подібна платформа
       Then у "maria" has_premium = true
       And у "alex" залишається has_premium = false
 
-    @REQ-17 @REQ-18
-    Scenario: SC-14 Відмова в оплаті Premium
+    @REQ-17 @REQ-20
+    Scenario: SC-15 Відмова в оплаті Premium (первинна)
       Given користувач "alex" авторизований
       And у "alex" has_premium = false
       When "alex" оформлює Premium
@@ -130,7 +138,25 @@ Feature: LeetCode-подібна платформа
       And опис задач з is_premium = true для "alex" залишається заблокованим
 
     @REQ-18
-    Scenario: SC-15 Користувач без Premium відкриває Premium-задачу
+    Scenario: SC-16 Відмова при поновленні Premium — підписка залишається активною
+      Given користувач "alex" авторизований
+      And у "alex" has_premium = true
+      When настає дата щомісячного списання коштів за Premium
+      And платіжний сервіс повідомляє про відмову з причиною "Недостатньо коштів"
+      Then у "alex" has_premium = true
+      And система зберігає дату невдалої оплати
+      And система показує причину відмови "Недостатньо коштів"
+
+    @REQ-19
+    Scenario: SC-17 Premium скасовується через тиждень неоплати
+      Given у "alex" has_premium = true
+      And останню невдалу спробу списання коштів за Premium для "alex" зафіксовано 7 днів тому
+      And оплата досі не проведена успішно
+      When система перевіряє статус Premium-підписок
+      Then у "alex" has_premium = false
+
+    @REQ-20
+    Scenario: SC-18 Користувач без Premium відкриває Premium-задачу
       Given користувач "alex" авторизований
       And у "alex" has_premium = false
       And у каталозі є задача "LRU Cache" з is_premium = true
@@ -138,30 +164,14 @@ Feature: LeetCode-подібна платформа
       Then задача відображається в каталозі
       But опис задачі та форма надсилання рішення заблоковані
 
-    @REQ-19
-    Scenario: SC-16 Premium-користувач відкриває Premium-задачу
+    @REQ-21
+    Scenario: SC-19 Premium-користувач відкриває Premium-задачу
       Given користувач "maria" авторизований
       And у "maria" has_premium = true
       And у каталозі є задача "LRU Cache" з is_premium = true
       When "maria" відкриває задачу "LRU Cache"
       Then відображається опис задачі
       And доступна форма надсилання рішення
-
-  Rule: Адміністрування
-
-    @REQ-20
-    Scenario: SC-17 Збереження задачі без тест-кейсів
-      Given користувач "admin" авторизований з role "admin"
-      When "admin" зберігає нову задачу "Merge Intervals" без жодного тест-кейсу
-      Then збереження відхилено
-      And задача "Merge Intervals" не з'являється в каталозі
-
-    @REQ-21
-    Scenario: SC-18 Користувач без ролі admin створює задачу
-      Given користувач "alex" авторизований з role "user"
-      When "alex" намагається створити задачу "Merge Intervals"
-      Then дію відхилено
-      And задача "Merge Intervals" не з'являється в каталозі
 
     @REQ-22
     Scenario: SC-20 Подарунок неіснуючому користувачу
@@ -179,3 +189,19 @@ Feature: LeetCode-подібна платформа
       Then оформлення відхилено
       And система повідомляє, що "maria" уже має Premium
       And запит до платіжного сервісу не надсилається
+
+  Rule: Адміністрування
+
+    @REQ-24
+    Scenario: SC-22 Збереження задачі без тест-кейсів
+      Given користувач "admin" авторизований з role "admin"
+      When "admin" зберігає нову задачу "Merge Intervals" без жодного тест-кейсу
+      Then збереження відхилено
+      And задача "Merge Intervals" не з'являється в каталозі
+
+    @REQ-25
+    Scenario: SC-23 Користувач без ролі admin створює задачу
+      Given користувач "alex" авторизований з role "user"
+      When "alex" намагається створити задачу "Merge Intervals"
+      Then дію відхилено
+      And задача "Merge Intervals" не з'являється в каталозі
