@@ -28,6 +28,7 @@ rectangle {
   usecase "UC-10\nВідкрити Premium-задачу" as UC10
   usecase "UC-11\nСтворити задачу" as UC11
   usecase "UC-12\nПодарувати Premium" as UC12
+  usecase "UC-13\nОбчислити time та space\ncomplexity" as UC13
 }
 
 ' ===== Зовнішні системи (праворуч) =====
@@ -48,6 +49,7 @@ UC09 --> Pay
 
 ' ===== include / extend =====
 UC05 ..> UC06 : <<include>>
+UC13 ..> UC06 : <<extend>>\n[статус Accepted]
 UC02 ..> UC01 : <<extend>>\n[обрано фільтр]
 UC08 ..> UC07 : <<extend>>\n[рішення має статус Accepted]
 UC12 ..> UC09 : <<extend>>\n[отримувач — інший користувач]

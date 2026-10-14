@@ -90,9 +90,37 @@ Feature: LeetCode-подібна платформа
       And першим відображається Submission від 02.10
       And для кожного Submission показано статус, мову, runtime_ms і дату
 
+  Rule: Складність рішення
+
+    @REQ-15 @REQ-16
+    Scenario: SC-25 Підрахунок time та space complexity після Accepted
+      Given користувач "alex" авторизований
+      And у задачі "Two Sum" є 3 тест-кейси
+      When користувач надсилає рішення на Python з одним проходом по масиву та хеш-мапою, що проходить усі 3 тест-кейси
+      Then Submission отримує статус "Accepted"
+      And у Submission збережено time_complexity "O(n)" і space_complexity "O(n)"
+      And користувачу показано time_complexity "O(n)" і space_complexity "O(n)" поруч із runtime_ms і memory_kb
+
+    @REQ-17
+    Scenario: SC-26 Складність не обчислюється для неприйнятого рішення
+      Given користувач "alex" авторизований
+      When користувач надсилає рішення, яке на одному з тест-кейсів повертає неправильний вивід
+      Then Submission отримує статус "Wrong Answer"
+      And time_complexity і space_complexity у Submission залишаються порожніми
+      And користувачу не показується оцінка складності
+
+    @REQ-16
+    Scenario: SC-27 Складність видно в історії надсилань
+      Given користувач "alex" авторизований
+      And у "alex" є Submission від 02.10 зі статусом "Accepted", time_complexity "O(n)" і space_complexity "O(n)"
+      And у "alex" є Submission від 01.10 зі статусом "Wrong Answer"
+      When "alex" відкриває історію надсилань
+      Then для Submission від 02.10 показано time_complexity "O(n)" і space_complexity "O(n)"
+      And для Submission від 01.10 оцінка складності не показується
+
   Rule: Розбори
 
-    @REQ-15
+    @REQ-18
     Scenario: SC-11 Успішна публікація розбору
       Given користувач "alex" авторизований
       And у "alex" є Submission для задачі "Two Sum" зі статусом "Accepted"
@@ -101,7 +129,7 @@ Feature: LeetCode-подібна платформа
       Then створюється EditorialPost з title "Hash map за O(n)"
       And EditorialPost пов'язаний з "alex", задачею "Two Sum" і цим Submission
 
-    @REQ-15
+    @REQ-18
     Scenario: SC-12 Розбір на основі неприйнятого рішення
       Given користувач "alex" авторизований
       And у "alex" є Submission для задачі "Two Sum" зі статусом "Wrong Answer"
@@ -109,7 +137,7 @@ Feature: LeetCode-подібна платформа
       Then публікацію відхилено
       And EditorialPost не створюється
 
-    @REQ-16
+    @REQ-19
     Scenario: SC-13 Повторний розбір для того самого рішення
       Given користувач "alex" авторизований
       And у "alex" є Submission зі статусом "Accepted", для якого вже існує EditorialPost
@@ -119,7 +147,7 @@ Feature: LeetCode-подібна платформа
 
   Rule: Premium
 
-    @REQ-17
+    @REQ-20
     Scenario: SC-14 Успішна оплата Premium собі
       Given користувач "alex" авторизований
       And у "alex" has_premium = false
@@ -127,7 +155,7 @@ Feature: LeetCode-подібна платформа
       And платіжний сервіс підтверджує успішну оплату
       Then у "alex" has_premium = true
 
-    @REQ-17
+    @REQ-20
     Scenario: SC-15 Успішне оформлення Premium у подарунок
       Given користувач "alex" авторизований
       And у "alex" has_premium = false
@@ -137,7 +165,7 @@ Feature: LeetCode-подібна платформа
       Then у "maria" has_premium = true
       And у "alex" залишається has_premium = false
 
-    @REQ-18 @REQ-21
+    @REQ-21 @REQ-24
     Scenario: SC-16 Відмова в оплаті Premium (первинна)
       Given користувач "alex" авторизований
       And у "alex" has_premium = false
@@ -147,7 +175,7 @@ Feature: LeetCode-подібна платформа
       And система показує причину відмови "Недостатньо коштів"
       And опис задач з is_premium = true для "alex" залишається заблокованим
 
-    @REQ-19
+    @REQ-22
     Scenario: SC-17 Відмова при поновленні Premium — підписка залишається активною
       Given користувач "alex" авторизований
       And у "alex" has_premium = true
@@ -157,7 +185,7 @@ Feature: LeetCode-подібна платформа
       And система зберігає дату невдалої оплати
       And система показує причину відмови "Недостатньо коштів"
 
-    @REQ-20
+    @REQ-23
     Scenario: SC-18 Premium скасовується через тиждень неоплати
       Given у "alex" has_premium = true
       And останню невдалу спробу списання коштів за Premium для "alex" зафіксовано 7 днів тому
@@ -165,7 +193,7 @@ Feature: LeetCode-подібна платформа
       When система перевіряє статус Premium-підписок
       Then у "alex" has_premium = false
 
-    @REQ-21
+    @REQ-24
     Scenario: SC-19 Користувач без Premium відкриває Premium-задачу
       Given користувач "alex" авторизований
       And у "alex" has_premium = false
@@ -174,7 +202,7 @@ Feature: LeetCode-подібна платформа
       Then задача відображається в каталозі
       But опис задачі та форма надсилання рішення заблоковані
 
-    @REQ-22
+    @REQ-25
     Scenario: SC-20 Premium-користувач відкриває Premium-задачу
       Given користувач "maria" авторизований
       And у "maria" has_premium = true
@@ -183,7 +211,7 @@ Feature: LeetCode-подібна платформа
       Then відображається опис задачі
       And доступна форма надсилання рішення
 
-    @REQ-23
+    @REQ-26
     Scenario: SC-21 Подарунок неіснуючому користувачу
       Given користувач "alex" авторизований
       And користувача з username "ghost" не існує
@@ -191,7 +219,7 @@ Feature: LeetCode-подібна платформа
       Then оформлення відхилено
       And запит до платіжного сервісу не надсилається
 
-    @REQ-24
+    @REQ-27
     Scenario: SC-22 Подарунок користувачу, який уже має Premium
       Given користувач "alex" авторизований
       And існує користувач "maria" з has_premium = true
@@ -202,14 +230,14 @@ Feature: LeetCode-подібна платформа
 
   Rule: Адміністрування
 
-    @REQ-25
+    @REQ-28
     Scenario: SC-23 Збереження задачі без тест-кейсів
       Given користувач "admin" авторизований з role "admin"
       When "admin" зберігає нову задачу "Merge Intervals" без жодного тест-кейсу
       Then збереження відхилено
       And задача "Merge Intervals" не з'являється в каталозі
 
-    @REQ-26
+    @REQ-29
     Scenario: SC-24 Користувач без ролі admin створює задачу
       Given користувач "alex" авторизований з role "user"
       When "alex" намагається створити задачу "Merge Intervals"
