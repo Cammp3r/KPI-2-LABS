@@ -1,0 +1,57 @@
+@startuml
+title SC-07. Правильне рішення отримує статус Accepted
+
+actor "User" as User
+boundary "Web UI" as UI
+control "SubmissionController" as Controller
+entity "SubmissionService" as SubmissionService
+participant "Judge" as Judge
+participant "CodeRunner" as Runner
+participant "ResourceMonitor" as Metrics
+database "Database" as DB
+
+User -> UI: selectLanguage(language)
+User -> UI: submitSolution(code, language, taskId)
+UI -> Controller: postSubmission(code, language, taskId, userId)
+
+Controller -> SubmissionService: createPendingSubmission()
+SubmissionService -> DB: saveSubmission(status="Pending")
+DB --> SubmissionService: submissionId
+SubmissionService --> Controller: pendingSubmission(submissionId)
+Controller -> Judge: validateSubmission(submissionId)
+
+loop Для кожного тест-кейсу
+    Judge -> DB: loadNextTestCase(taskId)
+    DB --> Judge: testCase
+    Judge -> Runner: executeTestCase(code, testCase)
+    Runner -> Metrics: measure(runtime, memory)
+end
+
+alt Рішення перевищує ліміт часу
+    Metrics --> Runner: executionMetrics
+    Runner --> Judge: testResult(executionMetrics)
+    Judge -> SubmissionService: markAsRejected(submissionId)
+    SubmissionService -> DB: updateStatus("Rejected")
+    SubmissionService --> Controller: rejectedSubmission
+    Controller --> UI: displayResults("Rejected")
+    UI --> User: showRejectedResult()
+else Рішення не перевищує ліміт часу
+alt Усі тест-кейси пройдено
+    Judge -> SubmissionService: markAsAccepted(submissionId)
+    SubmissionService -> DB: updateStatus("Accepted")
+    SubmissionService -> DB: saveMetrics(runtime, memory)
+    SubmissionService -> DB: addToUserHistory(userId, submissionId)
+    SubmissionService --> Controller: acceptedSubmission
+    Controller --> UI: displayResults("Accepted", runtime, memory)
+    UI --> User: showAcceptedResult()
+else Тест не пройдено
+    Judge -> SubmissionService: markAsRejected(submissionId)
+    SubmissionService -> DB: updateStatus("Rejected")
+    SubmissionService --> Controller: rejectedSubmission
+    Controller --> UI: displayResults("Rejected")
+    UI --> User: showRejectedResult()
+end
+end
+
+
+@enduml
