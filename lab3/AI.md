@@ -346,3 +346,173 @@ end
 7. є друкарська помилка `кжоному`.
 
 Після цих виправлень діаграма буде відповідати `SC-07` значно краще.
+
+
+# 3 Промпт
+
+    - Запит: дивись я зробив sequence для sc08 перевір чи все ок ? і у мене є питання може краще вмістити sc07 та sc08 в одну sequence діаграму чи ні?
+
+    - Відповідь: Перевірю повний `SC-08` і порівняю його з діаграмою `SC-07`, щоб оцінити і коректність сценарію, і доцільність об’єднання.
+
+"Read" failed
+Completed with input: {
+  "path": "C:\\Users\\geoge\\OneDrive\\Рабочий стіл\\KPI 2 LABS\\lab3\\sequence\\SC-08.puml"
+}
+Tool execution failed: Path does not exist
+
+"Search" failed
+Tool execution failed: rg: C:\Users\geoge\OneDrive\Рабочий стіл\KPI 2 LABS: IO error for operation on C:\Users\geoge\OneDrive\Рабочий стіл\KPI 2 LABS: The system cannot find the path specified. (os error 3)
+
+"Search" failed
+Tool execution failed: Search paths do not exist: C:\Users\geoge\OneDrive\Рабочий стіл\KPI 2 LABS\lab3
+
+Шлях із контексту середовища не відкрився буквально (імовірно, через кодування назви теки), тому знайду файл від поточного робочого каталогу й продовжу без припущень.
+
+Find files matching `**/SC-08.puml`
+
+Find files matching `**/SC-07.puml`
+
+Find files matching `**/sequence/*.puml`
+
+Read 
+Completed with input: {
+  "path": ".\\lab3\\sequence\\SC-08.puml"
+}
+
+Read 
+Completed with input: {
+  "path": ".\\lab3\\sequence\\SC-07.puml"
+}
+
+Read 
+Completed with input: {
+  "path": ".\\lab3\\sequence"
+}
+
+Перевірив `SC-08.puml` у порівнянні з `SC-07.puml`.
+
+### Що потрібно виправити в SC-08
+
+1. **Неправильний заголовок**
+
+Зараз у SC-08 написано:
+
+```plantuml
+title SC-07. Правильне рішення получает статус Accepted
+```
+
+Має бути щось на кшталт:
+
+```plantuml
+title SC-08. Рішення перевищує ліміт часу
+```
+
+або відповідно до назви твого сценарію.
+
+2. **`Metrics --> Runner` і `Runner --> Judge` стоять не в циклі**
+
+У SC-08 зараз:
+
+```plantuml
+loop Для кожного тест-кейсу
+    Judge -> DB: loadNextTestCase(taskId)
+    DB --> Judge: testCase
+    Judge -> Runner: executeTestCase(code, testCase)
+    Runner -> Metrics: measure(runtime, memory)
+end
+
+alt Рішення перевищує ліміт часу
+    Metrics --> Runner: executionMetrics
+    Runner --> Judge: testResult(executionMetrics)
+```
+
+Це означає, що для кожного тесту запускається виконання, але результат повертається лише після завершення циклу. Логічно краще повернути результат усередині циклу:
+
+```plantuml
+loop Для кожного тест-кейсу
+    Judge -> DB: loadNextTestCase(taskId)
+    DB --> Judge: testCase
+    Judge -> Runner: executeTestCase(code, testCase)
+    Runner -> Metrics: measure(runtime, memory)
+    Metrics --> Runner: executionMetrics
+    Runner --> Judge: testResult(executionMetrics)
+
+    alt Рішення перевищує ліміт часу
+        Judge -> SubmissionService: markAsRejected(submissionId)
+        SubmissionService -> DB: updateStatus("Rejected")
+        SubmissionService --> Controller: rejectedSubmission
+        Controller --> UI: displayResults("Rejected")
+        UI --> User: showRejectedResult()
+        break
+    else Ліміт часу не перевищено
+        Judge -> Judge: перевірити наступний тест
+    end
+end
+```
+
+Але `break` може залежати від того, чи підтримує його твій рендерер PlantUML. Безпечніший варіант — описати умову словами через `alt`, не використовуючи `break`.
+
+3. **Потрібно показати, хто саме визначає перевищення ліміту**
+
+Зараз `ResourceMonitor` лише повертає метрики:
+
+```plantuml
+Metrics --> Runner: executionMetrics
+```
+
+Але не видно, де порівнюється час із лімітом. Краще додати:
+
+```plantuml
+Runner -> Metrics: measure(runtime, memory)
+Metrics --> Runner: executionMetrics
+Runner -> Runner: compareWithLimits()
+Runner --> Judge: testResult(timeoutExceeded)
+```
+
+або:
+
+```plantuml
+Metrics -> Metrics: checkTimeLimit(runtime)
+Metrics --> Runner: executionMetrics(timeoutExceeded)
+```
+
+4. **У SC-08 є дублювання SC-07**
+
+SC-08 містить три результати:
+
+- перевищення ліміту часу;
+- усі тести пройдено;
+- тест не пройдено.
+
+Якщо SC-08 має описувати саме сценарій перевищення ліміту часу, то гілки `Усі тест-кейси пройдено` і `Тест не пройдено` там зайві. Вони вже описані у `SC-07.puml`.
+
+### Чи об’єднувати SC-07 і SC-08?
+
+Я б **залишив їх окремими діаграмами**, якщо:
+
+- SC-07 — успішний сценарій: рішення отримує `Accepted`;
+- SC-08 — альтернативний сценарій: рішення отримує `Rejected` через перевищення часу.
+
+Це відповідає хорошій практиці: одна sequence-діаграма показує один основний сценарій або одну суттєву альтернативу. Окремі діаграми будуть читабельнішими й не матимуть великої кількості вкладених `alt`.
+
+Об’єднання можливе, якщо викладач вимагає одну діаграму для всього процесу. Тоді структура мала б бути такою:
+
+```plantuml
+alt Усі тест-кейси пройдено
+    ... Accepted ...
+else Перевищено ліміт часу
+    ... Rejected: Time Limit ...
+else Тест не пройдено
+    ... Rejected: Wrong Answer ...
+end
+```
+
+Але в такому випадку діаграма стане довшою і менш сфокусованою.
+
+### Рекомендований розподіл
+
+- **SC-07** — залишити як сценарій `Accepted`.
+- **SC-08** — залишити тільки сценарій `Time Limit Exceeded`.
+- За потреби окремо створити сценарій для `Wrong Answer`, наприклад `SC-09`.
+
+Також зверни увагу: у назві сценарію краще використовувати один термін — або українське «перевищено ліміт часу», або англійське `Time Limit Exceeded`, але не змішувати варіанти без потреби.

@@ -1,5 +1,5 @@
 @startuml
-title SC-07. Правильне рішення отримує статус Accepted
+title SC-08. Рішення перевищує ліміт часу
 
 actor "User" as User
 boundary "Web UI" as UI
@@ -25,32 +25,21 @@ loop Для кожного тест-кейсу
     DB --> Judge: testCase
     Judge -> Runner: executeTestCase(code, testCase)
     Runner -> Metrics: measure(runtime, memory)
-end
-
-alt Рішення перевищує ліміт часу
     Metrics --> Runner: executionMetrics
     Runner --> Judge: testResult(executionMetrics)
-    Judge -> SubmissionService: markAsRejected(submissionId)
-    SubmissionService -> DB: updateStatus("Rejected")
-    SubmissionService --> Controller: rejectedSubmission
-    Controller --> UI: displayResults("Rejected")
-    UI --> User: showRejectedResult()
-else Рішення не перевищує ліміт часу
-alt Усі тест-кейси пройдено
-    Judge -> SubmissionService: markAsAccepted(submissionId)
-    SubmissionService -> DB: updateStatus("Accepted")
-    SubmissionService -> DB: saveMetrics(runtime, memory)
-    SubmissionService -> DB: addToUserHistory(userId, submissionId)
-    SubmissionService --> Controller: acceptedSubmission
-    Controller --> UI: displayResults("Accepted", runtime, memory)
-    UI --> User: showAcceptedResult()
-else Тест не пройдено
-    Judge -> SubmissionService: markAsRejected(submissionId)
-    SubmissionService -> DB: updateStatus("Rejected")
-    SubmissionService --> Controller: rejectedSubmission
-    Controller --> UI: displayResults("Rejected")
-    UI --> User: showRejectedResult()
-end
+
+    alt Рішення перевищує ліміт часу
+        Judge -> Runner: stopExecution()
+        Runner --> Judge: executionStopped
+        Judge -> SubmissionService: markAsRejected(submissionId, reason="Time Limit Exceeded")
+        SubmissionService -> DB: updateStatus("Rejected", reason="Time Limit Exceeded")
+        SubmissionService --> Controller: rejectedSubmission
+        Controller --> UI: displayResults("Time Limit Exceeded")
+        UI --> User: showTimeLimitError()
+        break
+    else Ліміт часу не перевищено
+        Judge -> Judge: перевірити наступний тест
+    end
 end
 
 
