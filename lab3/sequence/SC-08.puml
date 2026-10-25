@@ -18,6 +18,8 @@ Controller -> SubmissionService: createPendingSubmission()
 SubmissionService -> DB: saveSubmission(status="Pending")
 DB --> SubmissionService: submissionId
 SubmissionService --> Controller: pendingSubmission(submissionId)
+Controller --> UI: submissionCreated(submissionId)
+UI --> User: submissionQueued()
 Controller -> Judge: validateSubmission(submissionId)
 activate Judge
 
@@ -37,6 +39,7 @@ loop Для кожного тест-кейсу
         SubmissionService --> Controller: rejectedSubmission
         Controller --> UI: displayResults("Time Limit Exceeded")
         UI --> User: showTimeLimitError()
+        UI --> User: errorDisplayed()
         break
     else Ліміт часу не перевищено
         Judge -> Judge: перевірити наступний тест

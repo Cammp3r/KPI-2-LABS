@@ -18,6 +18,8 @@ Controller -> SubmissionService: createPendingSubmission()
 SubmissionService -> DB: saveSubmission(status="Pending")
 DB --> SubmissionService: submissionId
 SubmissionService --> Controller: pendingSubmission(submissionId)
+Controller --> UI: submissionCreated(submissionId)
+UI --> User: submissionQueued()
 Controller -> Judge: validateSubmission(submissionId)
 activate Judge
 
@@ -38,12 +40,14 @@ alt Усі тест-кейси пройдено
     SubmissionService --> Controller: acceptedSubmission
     Controller --> UI: displayResults("Accepted", runtime, memory)
     UI --> User: showAcceptedResult()
+    UI --> User: resultDisplayed()
 else Тест не пройдено
     Judge -> SubmissionService: markAsRejected(submissionId)
     SubmissionService -> DB: updateStatus("Rejected")
     SubmissionService --> Controller: rejectedSubmission
     Controller --> UI: displayResults("Rejected")
     UI --> User: showRejectedResult()
+    UI --> User: resultDisplayed()
 end
 
 deactivate Judge
