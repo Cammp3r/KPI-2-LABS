@@ -19,6 +19,7 @@ SubmissionService -> DB: saveSubmission(status="Pending")
 DB --> SubmissionService: submissionId
 SubmissionService --> Controller: pendingSubmission(submissionId)
 Controller -> Judge: validateSubmission(submissionId)
+activate Judge
 
 loop Для кожного тест-кейсу
     Judge -> DB: loadNextTestCase(taskId)
@@ -45,4 +46,5 @@ else Тест не пройдено
     UI --> User: showRejectedResult()
 end
 
+deactivate Judge
 @enduml
