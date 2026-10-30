@@ -12,34 +12,58 @@ database "Database" as DB
 
 User -> UI: selectLanguage(language)
 User -> UI: submitSolution(code, language, taskId)
+activate UI
 UI -> Controller: postSubmission(code, language, taskId, userId)
+activate Controller
 
 Controller -> SubmissionService: createPendingSubmission()
+activate SubmissionService
 SubmissionService -> DB: saveSubmission(status="Pending")
+activate DB
 DB --> SubmissionService: submissionId
+deactivate DB
 SubmissionService --> Controller: pendingSubmission(submissionId)
+deactivate SubmissionService
 Controller --> UI: submissionCreated(submissionId)
 UI --> User: submissionQueued()
+deactivate Controller
+deactivate UI
 Controller -> Judge: validateSubmission(submissionId)
 activate Judge
 
 loop Для кожного тест-кейсу
     Judge -> DB: loadNextTestCase(taskId)
+    activate DB
     DB --> Judge: testCase
+    deactivate DB
     Judge -> Runner: executeTestCase(code, testCase)
+    activate Runner
     Runner -> Metrics: measure(runtime, memory)
+    activate Metrics
     Metrics --> Runner: executionMetrics
+    deactivate Metrics
     Runner --> Judge: testResult(executionMetrics)
+    deactivate Runner
 
     alt Рішення перевищує ліміт часу
         Judge -> Runner: stopExecution()
+        activate Runner
         Runner --> Judge: executionStopped
+        deactivate Runner
         Judge -> SubmissionService: markAsRejected(submissionId, reason="Time Limit Exceeded")
+        activate SubmissionService
         SubmissionService -> DB: updateStatus("Rejected", reason="Time Limit Exceeded")
+        activate DB
+        deactivate DB
         SubmissionService --> Controller: rejectedSubmission
+        deactivate SubmissionService
+        activate Controller
         Controller --> UI: displayResults("Time Limit Exceeded")
+        activate UI
         UI --> User: showTimeLimitError()
         UI --> User: errorDisplayed()
+        deactivate UI
+        deactivate Controller
         break
     else Ліміт часу не перевищено
         Judge -> Judge: перевірити наступний тест
