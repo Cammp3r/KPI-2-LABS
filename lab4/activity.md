@@ -8,8 +8,11 @@ flowchart TD
         D1
         end
     subgraph System
-        E --> F[[Create sumbission]]
+        E --> F[[Create submission with status Pending]]
         F --> G0[[send code]]
+        S1[[Save final status Accepted]]
+        S2[[Save runtime_ms and memory_kb]]
+        S3[[Save final failure status based on test results: Wrong Answer, Time Limit Exceeded, Runtime Error or Compilation Error]]
         
     end
     subgraph Judge
@@ -17,8 +20,11 @@ flowchart TD
     G1 --> G2[[send to code runner]]
     G2 --> G4[[receive test results from code runner]]
     G4 --> G{If code pass all test cases}
-    G --> |no| G3[[give user information about fail]]
-    G --> |yes| D1[[give user information that he solved succsefully]]
+    G --> |no| S3
+    S3 --> G3[[give user information about fail]]
+    G --> |yes| S1
+    S1 --> S2
+    S2 --> D1[[give user information that he solved succsefully]]
     end
 
 ```
