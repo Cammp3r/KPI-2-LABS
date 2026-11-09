@@ -14,10 +14,11 @@ flowchart TD
     end
     subgraph Judge
     G0 --> G1[[recieve code]]
-    G1 --> G{If code pass all test cases}
-    G --> |yes| G2[[send to code runner]]
+    G1 --> G2[[send to code runner]]
+    G2 --> G4[[receive test results from code runner]]
+    G4 --> G{If code pass all test cases}
     G --> |no| G3[[give user information about fail]]
-    G2 --> D1[[give user information that he solved succsefully]]
+    G --> |yes| D1[[give user information that he solved succsefully]]
     end
 
 ```
