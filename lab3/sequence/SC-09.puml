@@ -1,5 +1,5 @@
 @startuml
-title SC-08. Рішення перевищує ліміт часу
+title SC-09. Рішення перевищує ліміт часу
 
 actor "User" as User
 boundary "Web UI" as UI
@@ -50,12 +50,12 @@ loop Для кожного тест-кейсу
         activate Runner
         Runner --> Judge: executionStopped
         deactivate Runner
-        Judge -> SubmissionService: markAsRejected(submissionId, reason="Time Limit Exceeded")
+        Judge -> SubmissionService: markAsTimeLimitExceeded(submissionId)
         activate SubmissionService
-        SubmissionService -> DB: updateStatus("Rejected", reason="Time Limit Exceeded")
+        SubmissionService -> DB: updateStatus("Time Limit Exceeded")
         activate DB
         deactivate DB
-        SubmissionService --> Controller: rejectedSubmission
+        SubmissionService --> Controller: timeLimitExceededSubmission
         deactivate SubmissionService
         activate Controller
         Controller --> UI: displayResults("Time Limit Exceeded")

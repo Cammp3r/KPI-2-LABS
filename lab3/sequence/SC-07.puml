@@ -68,17 +68,17 @@ alt Усі тест-кейси пройдено
     deactivate UI
     deactivate Controller
 else Тест не пройдено
-    Judge -> SubmissionService: markAsRejected(submissionId)
+    Judge -> SubmissionService: markAsWrongAnswer(submissionId)
     activate SubmissionService
-    SubmissionService -> DB: updateStatus("Rejected")
+    SubmissionService -> DB: updateStatus("Wrong Answer")
     activate DB
     deactivate DB
-    SubmissionService --> Controller: rejectedSubmission
+    SubmissionService --> Controller: wrongAnswerSubmission
     deactivate SubmissionService
     activate Controller
-    Controller --> UI: displayResults("Rejected")
+    Controller --> UI: displayResults("Wrong Answer")
     activate UI
-    UI --> User: showRejectedResult()
+    UI --> User: showWrongAnswerResult()
     UI --> User: resultDisplayed()
     deactivate UI
     deactivate Controller
