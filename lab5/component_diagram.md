@@ -24,9 +24,9 @@ package "Online Judge Platform" {
   interface "IAuthentication" as IAuthentication
   interface "IProblemManagement" as IProblemManagement
   interface "IJudge" as IJudge
-  interface "IPaymentGateway" as IPaymentGateway
 }
 
+interface "IPaymentGateway" as IPaymentGateway
 cloud "Payment Service" as Payment
 cloud "OAuth / Identity Provider" as OAuth
 cloud "Email/SMS Service" as Messaging
